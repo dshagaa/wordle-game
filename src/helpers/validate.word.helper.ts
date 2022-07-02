@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { get, isEmpty, split } from 'lodash';
+import { filter, get, isEmpty, size, split } from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -41,7 +41,8 @@ const GetStoredWordList = async (): Promise<string[]> => {
         'Content-Type': 'text/text; charset=UTF-8',
       },
       transformResponse: (data) => {
-        return split(data, '\n');
+        const list = split(data, '\n');
+        return filter(list, (word: string) => size(word) === 5);
       },
     });
     await StoreWordList(data);
