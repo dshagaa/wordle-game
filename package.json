@@ -21,7 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@codebrew/nestjs-storage": "^0.1.6",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.1",
