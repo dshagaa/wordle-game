@@ -10,6 +10,29 @@ const PATH = path.join(
   get(process, ['env', 'STORAGE_PATH'], '/tmp/storage'),
 );
 const FILE = 'word_list.txt';
+
+async function StoreWordList(data: string[]) {
+  fs.readdir(PATH, (err, files) => {
+    if (err) {
+      console.log('error1:');
+      fs.mkdirSync(PATH, { recursive: true });
+    }
+    fs.writeFileSync(path.join('/', PATH, FILE), JSON.stringify({ data }));
+    console.log(files);
+  });
+}
+
+async function ReadStoredWordList() {
+  try {
+    const content = fs.readFileSync(path.join('/', PATH, FILE), 'utf8');
+    if (content) {
+      return get(JSON.parse(content), 'data');
+    }
+  } catch (err) {
+    return [];
+  }
+}
+
 const GetStoredWordList = async (): Promise<string[]> => {
   WORD_LIST = await ReadStoredWordList();
   if (isEmpty(WORD_LIST)) {
@@ -26,23 +49,6 @@ const GetStoredWordList = async (): Promise<string[]> => {
   }
   return WORD_LIST;
 };
-
-async function StoreWordList(data: string[]) {
-  fs.readdir(PATH, (err, files) => {
-    if (err) {
-      console.log('error1:');
-      fs.mkdirSync(PATH, { recursive: true });
-    }
-    fs.writeFileSync(path.join('/', PATH, FILE), JSON.stringify({ data }));
-    console.log(files);
-  });
-}
-
-async function ReadStoredWordList() {
-  const content = fs.readFileSync(path.join('/', PATH, FILE), 'utf8');
-  const { data } = JSON.parse(content);
-  return data;
-}
 
 const RenewWord = () => {
   console.log();
