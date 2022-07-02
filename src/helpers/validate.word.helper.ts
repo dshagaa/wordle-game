@@ -1,5 +1,15 @@
 import axios from 'axios';
-import { filter, get, isEmpty, size, split } from 'lodash';
+import {
+  filter,
+  get,
+  indexOf,
+  isEmpty,
+  map,
+  nth,
+  random,
+  size,
+  split,
+} from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -51,8 +61,37 @@ const GetStoredWordList = async (): Promise<string[]> => {
   return WORD_LIST;
 };
 
+const GetRandomWord = async (): Promise<string> => {
+  const list: string[] = await GetStoredWordList();
+  return get(list, random(0, size(list) - 1)).toLowerCase();
+};
+
 const RenewWord = () => {
   console.log();
 };
 
-export { GetStoredWordList, RenewWord };
+const CompareWords = (selectedWord: string, userWord: string) => {
+  const intent = 1;
+  // @ToDo send intent
+  const sameWord = selectedWord === userWord;
+  if (sameWord) {
+    // correct answer
+    // save record
+    return map(userWord, (letter) => {
+      return { letter, value: 1 };
+    });
+  }
+  const userWordArray = split(userWord, '');
+  const selectedWordArray = split(selectedWord, '');
+  return map(userWordArray, (letter: string, index: number) => {
+    let value = 3;
+    const isIncluded = indexOf(selectedWordArray, letter) >= 0;
+    const isInSite = nth(selectedWordArray, index) === letter;
+    if (isIncluded) {
+      value = isInSite ? 1 : 2;
+    }
+    return { letter, value };
+  });
+};
+
+export { GetRandomWord, RenewWord, CompareWords };

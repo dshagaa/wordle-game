@@ -1,16 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ValidateWordDto } from './dto/validate-word.dto';
-import { map } from 'lodash';
+import { CompareWords, GetRandomWord } from '../helpers/validate.word.helper';
 
 @Injectable()
 export class ValidateWordService {
-  validate(body: ValidateWordDto): any {
-    const { user_word } = body;
-    return new Promise((res) => {
-      const result = map(user_word.toLowerCase(), (letter, index) => {
-        return { letter, value: 1 };
-      });
-      res(result);
-    });
+  async validate(body: ValidateWordDto) {
+    const userWord = body.user_word.toLowerCase();
+    const randomWord = await GetRandomWord();
+    const result = CompareWords(randomWord, userWord);
+    return { randomWord, userWord, result };
   }
 }
