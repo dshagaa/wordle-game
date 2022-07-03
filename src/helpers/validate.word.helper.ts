@@ -3,6 +3,7 @@ import {
   filter,
   find,
   get,
+  includes,
   isEmpty,
   map,
   nth,
@@ -69,9 +70,26 @@ const GetRandomWord = async (): Promise<string> => {
   return get(list, random(0, size(list) - 1)).toLowerCase();
 };
 
+const GetLatestSelectedWords = async (amount: number) => {
+  return await getRepository(SelectedWordsEntity).find({
+    order: {
+      id: 'DESC',
+    },
+    take: amount,
+  });
+};
+
 const RenewSelectedWord = async () => {
+  const word = await GetRandomWord();
+  const previousWords = map(
+    await GetLatestSelectedWords(100),
+    (selectedWord) => selectedWord.word,
+  );
+  if (includes(previousWords, word)) {
+    return RenewSelectedWord();
+  }
   const newWord = new SelectedWordsEntity();
-  newWord.word = await GetRandomWord();
+  newWord.word = word;
   try {
     await getRepository(SelectedWordsEntity).save(newWord);
   } catch (err) {
