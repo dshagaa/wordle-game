@@ -7,6 +7,7 @@ import { DatabaseConfigInterface } from './config/interfaces/database.config.int
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValidateWordModule } from './validate-word/validate-word.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ValidateWordModule } from './validate-word/validate-word.module';
       inject: [ConfigService],
     }),
     ValidateWordModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
