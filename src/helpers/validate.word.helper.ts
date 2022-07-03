@@ -12,6 +12,9 @@ import {
 } from 'lodash';
 import * as fs from 'fs';
 import * as path from 'path';
+import { SelectedWordsEntity } from '../validate-word/entities/selected.words.entity';
+import { getRepository } from 'typeorm';
+import { UnprocessableEntityException } from '@nestjs/common';
 
 const WORD_LIST_URL = 'https://gitlab.com/d2945/words/-/raw/main/words.txt';
 let WORD_LIST = [];
@@ -66,8 +69,22 @@ const GetRandomWord = async (): Promise<string> => {
   return get(list, random(0, size(list) - 1)).toLowerCase();
 };
 
-const RenewWord = () => {
-  console.log();
+const RenewSelectedWord = async () => {
+  const newWord = new SelectedWordsEntity();
+  newWord.word = await GetRandomWord();
+  try {
+    await getRepository(SelectedWordsEntity).save(newWord);
+  } catch (err) {
+    throw new UnprocessableEntityException(err.message);
+  }
+};
+
+const CurrentSelectedWord = async () => {
+  return await getRepository(SelectedWordsEntity).findOne({
+    order: {
+      id: 'DESC',
+    },
+  });
 };
 
 const CompareWords = (selectedWord: string, userWord: string) => {
@@ -101,4 +118,10 @@ const Normalize = function (word: string): string {
   return word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 };
 
-export { GetRandomWord, RenewWord, CompareWords, Normalize };
+export {
+  GetRandomWord,
+  CurrentSelectedWord,
+  RenewSelectedWord,
+  CompareWords,
+  Normalize,
+};

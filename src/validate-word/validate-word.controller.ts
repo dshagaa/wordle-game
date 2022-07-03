@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { ValidateWordService } from './validate-word.service';
 import { ValidateWordDto } from './dto/validate-word.dto';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller('validate-word')
 export class ValidateWordController {
@@ -9,5 +10,15 @@ export class ValidateWordController {
   @Post()
   validate(@Body() dto: ValidateWordDto) {
     return this.validateWordService.validate(dto);
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES, {
+    name: 'renewSelectedWord',
+    timeZone: 'utc',
+  })
+  @Get('/renew-word')
+  renewWord() {
+    Logger.debug('Changing selected word...');
+    return this.validateWordService.renew();
   }
 }

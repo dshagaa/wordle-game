@@ -8,6 +8,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValidateWordModule } from './validate-word/validate-word.module';
 import { UsersModule } from './users/users.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
       },
       load: [AppConfig, DatabaseConfig],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       useFactory(configService: ConfigService) {
         const database: DatabaseConfigInterface =
