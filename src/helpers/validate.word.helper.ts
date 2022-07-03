@@ -1,8 +1,8 @@
 import axios from 'axios';
 import {
   filter,
+  find,
   get,
-  indexOf,
   isEmpty,
   map,
   nth,
@@ -73,7 +73,7 @@ const RenewWord = () => {
 const CompareWords = (selectedWord: string, userWord: string) => {
   const intent = 1;
   // @ToDo send intent
-  const sameWord = selectedWord === userWord;
+  const sameWord = Normalize(selectedWord) === Normalize(userWord);
   if (sameWord) {
     // correct answer
     // save record
@@ -85,8 +85,11 @@ const CompareWords = (selectedWord: string, userWord: string) => {
   const selectedWordArray = split(selectedWord, '');
   return map(userWordArray, (letter: string, index: number) => {
     let value = 3;
-    const isIncluded = indexOf(selectedWordArray, letter) >= 0;
-    const isInSite = nth(selectedWordArray, index) === letter;
+    const isIncluded = find(selectedWordArray, (l: string) => {
+      return Normalize(l) === Normalize(letter);
+    });
+    const isInSite =
+      Normalize(nth(selectedWordArray, index)) === Normalize(letter);
     if (isIncluded) {
       value = isInSite ? 1 : 2;
     }
@@ -94,4 +97,8 @@ const CompareWords = (selectedWord: string, userWord: string) => {
   });
 };
 
-export { GetRandomWord, RenewWord, CompareWords };
+const Normalize = function (word: string): string {
+  return word.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+};
+
+export { GetRandomWord, RenewWord, CompareWords, Normalize };
