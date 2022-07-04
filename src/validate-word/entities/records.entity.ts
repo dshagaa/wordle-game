@@ -1,4 +1,7 @@
 import {
+  BeforeInsert,
+  BeforeSoftRemove,
+  BeforeUpdate,
   Column,
   DeleteDateColumn,
   Entity,
@@ -9,6 +12,7 @@ import {
 import { UserEntity } from '../../users/entities/user.entity';
 import { AnsweredWordsEntity } from './answered.words.entity';
 import { SelectedWordsEntity } from './selected.words.entity';
+import { GlobalHelper } from '../../helpers/global.helper';
 
 @Entity('records')
 export class RecordsEntity {
@@ -30,6 +34,22 @@ export class RecordsEntity {
   updated_at: string;
   @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
   deleted_at: string;
+
+  @BeforeInsert()
+  insert() {
+    this.uuid = GlobalHelper.uuid();
+    this.created_at = GlobalHelper.getCurrentDateTime();
+  }
+
+  @BeforeUpdate()
+  update() {
+    this.updated_at = GlobalHelper.getCurrentDateTime();
+  }
+
+  @BeforeSoftRemove()
+  softRemove() {
+    this.deleted_at = GlobalHelper.getCurrentDateTime();
+  }
 
   @ManyToOne(() => UserEntity, (user) => user.records, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'uuid' })

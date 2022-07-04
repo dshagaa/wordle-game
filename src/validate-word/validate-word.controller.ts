@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Request } from '@nestjs/common';
 import { ValidateWordService } from './validate-word.service';
 import { ValidateWordDto } from './dto/validate-word.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -8,8 +8,12 @@ export class ValidateWordController {
   constructor(private readonly validateWordService: ValidateWordService) {}
 
   @Post()
-  validate(@Body() dto: ValidateWordDto) {
-    return this.validateWordService.validate(dto);
+  validate(@Request() req: any, @Body() dto: ValidateWordDto) {
+    const data = {
+      ...dto,
+      user_id: req.$auth.uuid,
+    };
+    return this.validateWordService.validate(data);
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES, {

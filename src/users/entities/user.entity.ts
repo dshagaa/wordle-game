@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { GlobalHelper } from '../../helpers/global.helper';
 import { RecordsEntity } from '../../validate-word/entities/records.entity';
+import { SelectedWordsEntity } from '../../validate-word/entities/selected.words.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -24,15 +25,13 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 191 })
   password: string;
   @Column({ type: 'varchar', length: 255, default: null, nullable: true })
-  token: string;
+  auth_token: string;
   @Column({ type: 'timestamp', default: null, nullable: true })
   created_at: string;
   @Column({ type: 'timestamp', default: null, nullable: true })
   updated_at: string;
   @DeleteDateColumn({ type: 'timestamp', default: null, nullable: true })
   deleted_at: string;
-  @OneToMany(() => RecordsEntity, (record) => record.user)
-  records: RecordsEntity[];
 
   @BeforeInsert()
   insert() {
@@ -49,4 +48,9 @@ export class UserEntity {
   softRemove() {
     this.deleted_at = GlobalHelper.getCurrentDateTime();
   }
+
+  @OneToMany(() => RecordsEntity, (record) => record.user)
+  records: RecordsEntity[];
+  @OneToMany(() => SelectedWordsEntity, (selectedWord) => selectedWord.user)
+  selectedWords: SelectedWordsEntity[];
 }
