@@ -15,4 +15,9 @@ export class LeaderboardController {
   mostMatchedWords() {
     return this.leaderboardService.mostMatchedWords();
   }
+
+  @Get('top-ten-winners')
+  topTenWinners() {
+    return this.leaderboardService.topTenWinners();
+  }
 }
