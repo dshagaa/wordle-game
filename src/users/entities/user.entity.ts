@@ -24,7 +24,13 @@ export class UserEntity {
   email: string;
   @Column({ type: 'varchar', length: 191 })
   password: string;
-  @Column({ type: 'varchar', length: 255, default: null, nullable: true })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    default: null,
+    nullable: true,
+    unique: true,
+  })
   auth_token: string;
   @Column({ type: 'timestamp', default: null, nullable: true })
   created_at: string;
