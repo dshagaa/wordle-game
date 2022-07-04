@@ -9,9 +9,10 @@ export class ValidateWordController {
 
   @Post()
   validate(@Request() req: any, @Body() dto: ValidateWordDto) {
+    const { uuid: user_id } = req.$auth;
     const data = {
       ...dto,
-      user_id: req.$auth.uuid,
+      user_id,
     };
     return this.validateWordService.validate(data);
   }

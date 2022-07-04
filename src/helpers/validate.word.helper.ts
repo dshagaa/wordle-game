@@ -31,11 +31,9 @@ const FILE = 'word_list.txt';
 async function StoreWordList(data: string[]) {
   fs.readdir(PATH, (err, files) => {
     if (err) {
-      console.log('error1:');
       fs.mkdirSync(PATH, { recursive: true });
     }
     fs.writeFileSync(path.join('/', PATH, FILE), JSON.stringify({ data }));
-    console.log(files);
   });
 }
 

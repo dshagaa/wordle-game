@@ -7,7 +7,7 @@ import {
   Normalize,
   RenewSelectedWord,
 } from '../helpers/validate.word.helper';
-import { each, map } from 'lodash';
+import { each, map, sumBy } from 'lodash';
 import { getRepository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 
@@ -33,6 +33,9 @@ export class ValidateWordService {
     await GenerateNewIntent(currentWord.uuid, user_id, userWord);
     // compare words
     const result = CompareWords(currentWord.word, userWord);
+    if (sumBy(result, 'value') === 5) {
+      await RenewSelectedWord(user_id);
+    }
     return { currentWord, userWord, result };
   }
 

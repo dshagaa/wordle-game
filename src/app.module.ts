@@ -20,6 +20,8 @@ import { AppService } from './app.service';
 import { SecurityMiddleware } from './middlewares/security.middleware';
 import { ValidateWordController } from './validate-word/validate-word.controller';
 import { UsersController } from './users/users.controller';
+import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { LeaderboardController } from './leaderboard/leaderboard.controller';
 
 @Module({
   imports: [
@@ -57,6 +59,7 @@ import { UsersController } from './users/users.controller';
     }),
     ValidateWordModule,
     UsersModule,
+    LeaderboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -66,6 +69,10 @@ export class AppModule implements NestModule {
     consumer
       .apply(SecurityMiddleware)
       .exclude({ path: 'users', method: RequestMethod.POST })
-      .forRoutes(ValidateWordController, UsersController);
+      .forRoutes(
+        UsersController,
+        ValidateWordController,
+        LeaderboardController,
+      );
   }
 }
