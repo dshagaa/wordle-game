@@ -10,4 +10,9 @@ export class LeaderboardController {
     const { uuid: user_id } = req.$auth;
     return this.leaderboardService.history(user_id);
   }
+
+  @Get('most-matched-words')
+  mostMatchedWords() {
+    return this.leaderboardService.mostMatchedWords();
+  }
 }

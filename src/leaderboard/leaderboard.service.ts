@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { getRepository } from 'typeorm';
 import { RecordsEntity } from '../validate-word/entities/records.entity';
-import { filter, size, sumBy } from 'lodash';
+import { each, filter, groupBy, orderBy, size, sumBy } from 'lodash';
 
 @Injectable()
 export class LeaderboardService {
@@ -22,5 +22,26 @@ export class LeaderboardService {
         }),
       ),
     };
+  }
+
+  async mostMatchedWords() {
+    const recordsRepository = getRepository(RecordsEntity);
+    const winnedGames = filter(
+      await recordsRepository.find({
+        relations: ['answerWord', 'selectedWord'],
+      }),
+      (game) => {
+        return game.answerWord.word === game.selectedWord.word;
+      },
+    );
+    const mostMatchedWords = [];
+    each(Object.entries(groupBy(winnedGames, 'selectedWord.word')), (item) => {
+      const [word, records] = item;
+      mostMatchedWords.push({
+        word,
+        amount: size(records),
+      });
+    });
+    return orderBy(mostMatchedWords, { amount: 'DESC' });
   }
 }
