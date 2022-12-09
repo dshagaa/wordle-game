@@ -5,7 +5,7 @@ and [postgreSQL](https://www.postgresql.org)
 
 ## Installation
 
-1- Create a databas and import run the file ``public.sql``.
+1- Create a database and import run the file ``public.sql``.
 
 2- Copy and rename the file ``.env.example`` to ``.env``.
 
